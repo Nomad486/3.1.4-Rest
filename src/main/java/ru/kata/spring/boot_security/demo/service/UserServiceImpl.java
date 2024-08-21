@@ -8,7 +8,6 @@ import ru.kata.spring.boot_security.demo.dao.UserDAO;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
-import javax.management.relation.RoleNotFoundException;
 import java.util.List;
 import java.util.Set;
 
@@ -27,8 +26,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userDAO.findByUsername(username);
+    public User findByEmail(String email) {
+        return userDAO.findByEmail(email);
     }
 
     @Override
@@ -43,23 +42,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void save(User user, String roleName) {
-        Role role = roleDAO.findByName(roleName);
-        if (role == null) {
-            throw new IllegalArgumentException("Role not found: " + roleName);
+    public void save(User user, Set<Role> roles) {
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPassword);
         }
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        System.out.println("Encoded password: " + encodedPassword);
-        user.setPassword(encodedPassword);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Set.of(role));
+        user.setRoles(roles);
         userDAO.save(user);
     }
 
     @Override
     @Transactional
-    public void update(User user) {
-        userDAO.update(user);
+    public void update(User user, Set<Role> roles) {
+        User existingUser = userDAO.findById(user.getId());
+        if (existingUser != null) {
+            existingUser.setUsername(user.getUsername());
+            existingUser.setFirstName(user.getFirstName());
+            existingUser.setLastName(user.getLastName());
+            existingUser.setAge(user.getAge());
+            existingUser.setEmail(user.getEmail());
+
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
+                    String encodedPassword = passwordEncoder.encode(user.getPassword());
+                    existingUser.setPassword(encodedPassword);
+                }
+            }
+
+            existingUser.setRoles(roles);
+            userDAO.update(existingUser);
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.context.SecurityContextHolder;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/admin")
@@ -16,18 +19,21 @@ public class AdminController {
 
     private final UserService userService;
     private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
 
-    public AdminController(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
-    public String listUsers(Model model) {
+    public String listUsers(Model model, Principal principal) {
+        User currentUser = userService.findByEmail(principal.getName());
+        model.addAttribute("currentUser", currentUser);
         List<User> users = userService.findAll();
         model.addAttribute("users", users);
+        model.addAttribute("roles", roleService.findAll());
+        model.addAttribute("currentUserEmail", principal.getName());
+        model.addAttribute("currentUserRoles", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
         return "admin";
     }
 
@@ -39,9 +45,9 @@ public class AdminController {
     }
 
     @PostMapping("/create")
-    public String createUser(@ModelAttribute User user, @RequestParam String roleName) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userService.save(user, roleName);
+    public String createUser(@ModelAttribute User user, @RequestParam Set<Long> roleIds) {
+        Set<Role> roles = roleService.findRolesByIds(roleIds);
+        userService.save(user, roles);
         return "redirect:/admin";
     }
 
@@ -53,15 +59,16 @@ public class AdminController {
         return "edit";
     }
 
-    @PostMapping("/edit/{id}")
-    public String editUser(@PathVariable Long id, @ModelAttribute User user) {
+    @PostMapping("/edit")
+    public String editUser(@RequestParam Long id, @ModelAttribute User user, @RequestParam Set<Long> roleIds) {
         user.setId(id);
-        userService.update(user);
+        Set<Role> roles = roleService.findRolesByIds(roleIds);
+        userService.update(user, roles);
         return "redirect:/admin";
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable Long id) {
+    @PostMapping("/delete")
+    public String deleteUser(@RequestParam Long id) {
         userService.delete(id);
         return "redirect:/admin";
     }

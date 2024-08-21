@@ -1,14 +1,128 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>User Page</title>
+    <meta charset="UTF-8">
+    <title>User Information</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background-color: #343a40;
+            color: white;
+        }
+        .navbar .navbar-brand, .navbar .nav-link {
+            color: white;
+        }
+        .navbar .ml-auto .btn {
+            color: white;
+        }
+        .sidebar {
+            background-color: #ffffff;
+            padding: 20px;
+            height: 100vh;
+            color: black;
+            border-right: 1px solid #dee2e6;
+        }
+        .sidebar a {
+            color: black;
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+        }
+        .sidebar a.active {
+            background-color: #007bff;
+            color: white;
+        }
+        .sidebar a:hover {
+            background-color: #007bff;
+        }
+        .content {
+            padding: 20px;
+            background-color: #f1f1f1;
+        }
+        .table {
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            border: none;
+            vertical-align: middle;
+        }
+        .table th {
+            background-color: #ffffff;
+        }
+        .table tbody tr:nth-child(odd) {
+            background-color: #e9ecef;
+        }
+        .table tbody tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+        .navbar-brand {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-<h1>User Page</h1>
-<h1>Welcome, <span th:text="${user.name}">User Name</span></h1>
-<p>Username: <span th:text="${user.username}">user</span></p>
-<p>Name: <span th:text="${user.name}">Name</span></p>
-<p>Surname: <span th:text="${user.surname}">Surname</span></p>
-<a th:href="@{/logout}">Logout</a>
+
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" th:text="${user.email} + ' with roles: ' + ${user.roles}"></a>
+    <div class="ml-auto">
+        <form th:action="@{/logout}" method="post" class="ml-auto">
+            <button class="btn btn-outline-light" type="submit">Logout</button>
+        </form>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <nav class="col-md-2 d-none d-md-block sidebar">
+            <div class="sidebar-sticky">
+                <a href="#" class="nav-link active">User</a>
+            </div>
+        </nav>
+
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 content">
+            <h1 class="h2">User information-page</h1>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">About user</h5>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Age</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td th:text="${user.id}"></td>
+                            <td th:text="${user.firstName}"></td>
+                            <td th:text="${user.lastName}"></td>
+                            <td th:text="${user.age}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td th:each="role : ${user.roles}" th:text="${role.name}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

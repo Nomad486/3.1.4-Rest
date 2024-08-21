@@ -1,33 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>Create User</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<h1>Create New User</h1>
+<div class="container mt-4">
+    <h1>Create New User</h1>
+    <form th:action="@{/admin/create}" th:object="${user}" method="post">
+        <div class="form-group">
+            <label for="firstName">First name</label>
+            <input type="text" id="firstName" th:field="*{firstName}" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last name</label>
+            <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" th:field="*{age}" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" th:field="*{email}" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" th:field="*{password}" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="roles">Roles</label>
+            <select id="roles" name="roleIds" class="form-control" multiple required>
+                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Add new user</button>
+    </form>
+    <a th:href="@{/admin}" class="btn btn-secondary mt-3">Back to Users List</a>
+</div>
 
-<form th:action="@{/admin/create}" th:object="${user}" method="post">
-    <label for="username">Username:</label>
-    <input type="text" id="username" th:field="*{username}" />
-
-    <label for="name">Name:</label>
-    <input type="text" id="name" th:field="*{name}" />
-
-    <label for="surname">Surname:</label>
-    <input type="text" id="surname" th:field="*{surname}" />
-
-    <label for="password">Password:</label>
-    <input type="password" id="password" th:field="*{password}" />
-
-    <label for="role">Role:</label>
-    <select id="role" name="roleName">
-        <option th:each="role : ${roles}" th:value="${role.name}" th:text="${role.name}"></option>
-    </select>
-
-    <button type="submit">Create</button>
-</form>
-
-<a href="/admin">Back to Users List</a>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

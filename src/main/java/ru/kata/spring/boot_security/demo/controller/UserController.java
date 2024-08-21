@@ -20,9 +20,10 @@ public class UserController {
 
     @GetMapping
     public String userHome(Model model, Authentication authentication) {
-        String username = authentication.getName();
-        User user = userService.findByUsername(username);
+        String email = authentication.getName();
+        User user = userService.findByEmail(email);
         model.addAttribute("user", user);
+        model.addAttribute("activeTab", "user");
         return "user";
     }
 }
