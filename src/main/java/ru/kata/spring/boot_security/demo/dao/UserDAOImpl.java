@@ -58,28 +58,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     @Transactional
     public void update(User user) {
-        User existingUser = entityManager.find(User.class, user.getId());
-        if (existingUser != null) {
-            existingUser.setUsername(user.getUsername());
-            existingUser.setFirstName(user.getFirstName());
-            existingUser.setLastName(user.getLastName());
-            existingUser.setAge(user.getAge());
-            existingUser.setEmail(user.getEmail());
-            if (user.getPassword() != null && user.getPassword().isEmpty()) {
-                if (!user.getPassword().equals(user.getPassword())) {
-                    if (!user.getPassword().startsWith("$2a$")) {
-                        String encodedPassword = passwordEncoder.encode(user.getPassword());
-                        existingUser.setPassword(encodedPassword);
-                    } else {
-                        existingUser.setPassword(user.getPassword());
-                    }
-                }
-            } else {
-                existingUser.setPassword(existingUser.getPassword());
-            }
-            existingUser.setRoles(user.getRoles());
-            entityManager.merge(existingUser);
-        }
+        entityManager.merge(user);
     }
 
     @Override

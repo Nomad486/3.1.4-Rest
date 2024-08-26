@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.service;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,28 +52,24 @@ public class UserServiceImpl implements UserService {
         userDAO.save(user);
     }
 
+
     @Override
     @Transactional
     public void update(User user, Set<Role> roles) {
         User existingUser = userDAO.findById(user.getId());
         if (existingUser != null) {
-            existingUser.setUsername(user.getUsername());
-            existingUser.setFirstName(user.getFirstName());
-            existingUser.setLastName(user.getLastName());
-            existingUser.setAge(user.getAge());
-            existingUser.setEmail(user.getEmail());
-
             if (user.getPassword() != null && !user.getPassword().isEmpty()) {
                 if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
                     String encodedPassword = passwordEncoder.encode(user.getPassword());
                     existingUser.setPassword(encodedPassword);
                 }
             }
-
             existingUser.setRoles(roles);
             userDAO.update(existingUser);
         }
     }
+
+
 
     @Override
     @Transactional
