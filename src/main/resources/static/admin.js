@@ -1,20 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
-    fetchCurrentUser(); // Загружаем информацию о текущем пользователе
-    fetchUsers(); // Загружаем пользователей при загрузке страницы
+    fetchCurrentUser();
+    fetchUsers();
 
-    // Обработка создания нового пользователя
     document.getElementById("newUserForm").addEventListener("submit", function (event) {
         event.preventDefault();
         createUser();
     });
 
-    // Обработка обновления пользователя
     document.getElementById("editUserForm").addEventListener("submit", function (event) {
         event.preventDefault();
         updateUser();
     });
 
-    // Обработка удаления пользователя
     document.getElementById("deleteUserForm").addEventListener("submit", function (event) {
         event.preventDefault();
         deleteUser();
@@ -41,7 +38,6 @@ function fetchCurrentUser() {
     fetch("/api/admin/currentUser")
         .then(response => response.json())
         .then(user => {
-            // Отображение информации в верхнем меню
             document.querySelector('.navbar-brand').textContent = user.email + ' with roles: ' + user.roles.map(role => role.name).join(', ');
 
             // Заполняем таблицу с информацией о текущем пользователе во вкладке User
@@ -101,7 +97,7 @@ function loadRolesForNewUser() {
         .then(response => response.json())
         .then(allRoles => {
             const rolesSelect = document.getElementById("roles");
-            rolesSelect.innerHTML = ''; // Очищаем текущие значения
+            rolesSelect.innerHTML = '';
 
             allRoles.forEach(role => {
                 let option = document.createElement('option');
@@ -114,7 +110,7 @@ function loadRolesForNewUser() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    loadRolesForNewUser();  // Загрузка ролей при открытии формы нового пользователя
+    loadRolesForNewUser();
 });
 
 function createUser() {
@@ -133,7 +129,7 @@ function createUser() {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            ...getCsrfHeaders()  // Добавляем CSRF-заголовки
+            ...getCsrfHeaders()
         },
         body: JSON.stringify(user)
     })
@@ -141,31 +137,25 @@ function createUser() {
             if (!response.ok) {
                 throw new Error("Error creating user");
             }
-            document.getElementById("newUserForm").reset();  // Очищаем форму
+            document.getElementById("newUserForm").reset();
 
-            // Переключаемся обратно на вкладку с таблицей пользователей
             const adminTab = document.getElementById("v-pills-admin-tab");
             const usersTableContent = document.getElementById("users-table-content");
 
-            // Активируем вкладку Admin
             adminTab.classList.add("active");
             adminTab.setAttribute("aria-selected", "true");
 
-            // Убираем активный класс с вкладки New User
             const newUserTab = document.querySelector("#v-pills-tab .nav-link.active");
             newUserTab.classList.remove("active");
             newUserTab.setAttribute("aria-selected", "false");
 
-            // Показываем контент таблицы пользователей и скрываем контент New User
             usersTableContent.classList.add("show", "active");
             document.getElementById("new-user-content").classList.remove("show", "active");
 
-            // Обновляем таблицу с пользователями
             fetchUsers();
         })
         .catch(error => console.error('Error creating user:', error));
 }
-
 
 
 function openEditModal(userId) {
@@ -178,7 +168,6 @@ function openEditModal(userId) {
             document.getElementById("editAge").value = user.age;
             document.getElementById("editEmail").value = user.email;
 
-            // Очищаем и заполняем роли для редактирования
             fetch("/api/admin/roles")
                 .then(response => response.json())
                 .then(allRoles => {
@@ -219,16 +208,17 @@ function updateUser() {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            [csrfHeader]: csrfToken  // Передаем CSRF-токен в заголовок
+            [csrfHeader]: csrfToken
         },
         body: JSON.stringify(user)
     })
         .then(() => {
-            fetchUsers();  // Перезагружаем таблицу с пользователями
-            $('#editUserModal').modal('hide');  // Закрываем модальное окно
+            fetchUsers();
+            $('#editUserModal').modal('hide');
         })
         .catch(error => console.error('Error updating user:', error));
 }
+
 
 function openDeleteModal(userId) {
     fetch(`/api/admin/users/${userId}`)
@@ -245,6 +235,7 @@ function openDeleteModal(userId) {
         .catch(error => console.error('Error fetching user data for delete:', error));
 }
 
+
 function deleteUser() {
     const userId = document.getElementById("deleteUserId").value;
 
@@ -252,12 +243,12 @@ function deleteUser() {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
-            ...getCsrfHeaders()  // Добавляем CSRF-заголовки
+            ...getCsrfHeaders()
         }
     })
         .then(() => {
-            fetchUsers();  // Обновляем таблицу с пользователями
-            $('#deleteUserModal').modal('hide');  // Закрываем модальное окно
+            fetchUsers();
+            $('#deleteUserModal').modal('hide');
         })
         .catch(error => console.error('Error deleting user:', error));
 }
