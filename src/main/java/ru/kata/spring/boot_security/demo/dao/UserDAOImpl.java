@@ -58,7 +58,9 @@ public class UserDAOImpl implements UserDAO {
     @Override
     @Transactional
     public void update(User user) {
-        entityManager.merge(user);
+        System.out.println("Before update " + user);
+        User mergedUser = entityManager.merge(user);
+        System.out.println("After update " + mergedUser);
     }
 
     @Override

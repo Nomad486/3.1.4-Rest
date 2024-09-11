@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService {
     public void update(User user, Set<Role> roles) {
         User existingUser = userDAO.findById(user.getId());
         if (existingUser != null) {
+            BeanUtils.copyProperties(user, existingUser, "id", "password", "roles");
             if (user.getPassword() != null && !user.getPassword().isEmpty()) {
                 if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
                     String encodedPassword = passwordEncoder.encode(user.getPassword());
