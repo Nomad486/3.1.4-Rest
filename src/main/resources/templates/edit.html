@@ -8,44 +8,44 @@
 <body>
 <div class="container mt-4">
     <h2>Edit User</h2>
-    <form th:action="@{/admin/edit/{id}(id=${user.id})}" th:object="${user}" method="post">
-        <input type="hidden" th:field="*{id}" />
+    <form id="editUserForm">
+        <input type="hidden" id="userId" />
 
         <div class="form-group">
             <label for="firstName">First name</label>
-            <input type="text" id="firstName" th:field="*{firstName}" class="form-control" required />
+            <input type="text" id="firstName" class="form-control" required />
         </div>
 
         <div class="form-group">
             <label for="lastName">Last name</label>
-            <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required />
+            <input type="text" id="lastName" class="form-control" required />
         </div>
 
         <div class="form-group">
             <label for="age">Age</label>
-            <input type="number" id="age" th:field="*{age}" class="form-control" required />
+            <input type="number" id="age" class="form-control" required />
         </div>
 
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" id="email" th:field="*{email}" class="form-control" required />
+            <input type="email" id="email" class="form-control" required />
         </div>
 
         <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control" />
+            <input type="password" id="password" class="form-control" />
             <small class="form-text text-muted">Leave blank to keep the current password</small>
         </div>
 
         <div class="form-group">
             <label for="roles">Roles</label>
-            <select id="roles" name="roleIds" class="form-control" multiple required>
-                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}" th:selected="${user.roles.contains(role)}"></option>
+            <select id="roles" class="form-control" multiple required>
+                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
             </select>
         </div>
 
         <button type="submit" class="btn btn-primary">Update</button>
-        <a th:href="@{/admin}" class="btn btn-secondary">Cancel</a>
+        <a href="/admin" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
 

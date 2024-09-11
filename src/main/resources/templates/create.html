@@ -2,32 +2,31 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Create User</title>
-
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container mt-4">
     <h1>Create New User</h1>
-    <form th:action="@{/admin/create}" th:object="${user}" method="post">
+    <form id="newUserForm">
         <div class="form-group">
             <label for="firstName">First name</label>
-            <input type="text" id="firstName" th:field="*{firstName}" class="form-control" required />
+            <input type="text" id="firstName" name="firstName" class="form-control" required />
         </div>
         <div class="form-group">
             <label for="lastName">Last name</label>
-            <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required />
+            <input type="text" id="lastName" name="lastName" class="form-control" required />
         </div>
         <div class="form-group">
             <label for="age">Age</label>
-            <input type="number" id="age" th:field="*{age}" class="form-control" required />
+            <input type="number" id="age" name="age" class="form-control" required />
         </div>
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" id="email" th:field="*{email}" class="form-control" required />
+            <input type="email" id="email" name="email" class="form-control" required />
         </div>
         <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control" required />
+            <input type="password" id="password" name="password" class="form-control" required />
         </div>
         <div class="form-group">
             <label for="roles">Roles</label>
@@ -45,3 +44,4 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
+

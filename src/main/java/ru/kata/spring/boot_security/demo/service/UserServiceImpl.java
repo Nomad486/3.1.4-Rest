@@ -4,7 +4,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.dao.RoleDAO;
 import ru.kata.spring.boot_security.demo.dao.UserDAO;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -17,13 +16,13 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
-    private final RoleDAO roleDAO;
+    private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserDAO userDAO, PasswordEncoder passwordEncoder, RoleDAO roleDAO) {
+    public UserServiceImpl(UserDAO userDAO, PasswordEncoder passwordEncoder, RoleService roleService) {
         this.userDAO = userDAO;
         this.passwordEncoder = passwordEncoder;
-        this.roleDAO = roleDAO;
+        this.roleService = roleService;
     }
 
     @Override
@@ -69,8 +68,6 @@ public class UserServiceImpl implements UserService {
             userDAO.update(existingUser);
         }
     }
-
-
 
     @Override
     @Transactional
