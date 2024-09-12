@@ -40,7 +40,6 @@ function fetchCurrentUser() {
         .then(user => {
             document.querySelector('.navbar-brand').textContent = user.email + ' with roles: ' + user.roles.map(role => role.name).join(', ');
 
-            // Заполняем таблицу с информацией о текущем пользователе во вкладке User
             document.getElementById("currentUserId").textContent = user.id;
             document.getElementById("currentUserFirstName").textContent = user.firstName;
             document.getElementById("currentUserLastName").textContent = user.lastName;
